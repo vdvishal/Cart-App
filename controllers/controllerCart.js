@@ -135,20 +135,24 @@ let addToCart = (req,res) => {
             })
             } else {
                 let id =  req.params.productId;
-
-                let newCart = new CartModel({
-                    productId: id
-                })
-                newCart.save((err, result) => {
-                    if (err) {
-                        logger.error(`${err}`, 'Controller: addToCart', 10)
-                        let apiResponse = response.generate(true, 'Failed To Find Products Details', 500, null)
-                        res.send(apiResponse)
-                    } else {
-                        let apiResponse = response.generate(false, 'Product Added to Cart ', 200, result)
-                        res.send(apiResponse)
-                        logger.info('Product Added')
-                    }
+                Model.findOne({ 'productId': req.params.productId },
+                (err, result) => {
+                    let newCart = new CartModel({
+                        productId: result.productId,
+                        name:result.name,
+                        price:result.price
+                    })
+                    newCart.save((err, result) => {
+                        if (err) {
+                            logger.error(`${err}`, 'Controller: addToCart', 10)
+                            let apiResponse = response.generate(true, 'Failed To Find Products Details', 500, null)
+                            res.send(apiResponse)
+                        } else {
+                            let apiResponse = response.generate(false, 'Product Added to Cart ', 200, result)
+                            res.send(apiResponse)
+                            logger.info('Product Added')
+                        }
+                    })
                 })
 
             }
