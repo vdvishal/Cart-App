@@ -129,8 +129,9 @@ let addToCart = (req,res) => {
                     res.send(apiResponse)
                 }
                 else {
+                    let apiResponse = response.generate(false, 'Product Added to Cart ', 200, result)
                     logger.info('Product Added')
-                    res.send(result)
+                    res.send(apiResponse)
                 }
             })
             } else {
